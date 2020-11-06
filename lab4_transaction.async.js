@@ -1,7 +1,7 @@
 var Tx = require('ethereumjs-tx').Transaction
 
 const Web3 = require('web3')
-const web3 = new Web3('https://ropsten.infura.io/v3/[your infura key]')
+const web3 = new Web3('https://ropsten.infura.io/v3/[your_infura_key_here]')
 
 
 const account1 = '0x9b14eee99808bab2a4c6492d37b4d771f75b7631' // Your account address 1
@@ -41,13 +41,13 @@ const transferFunds = async(account1, account2, amount) => {
   const raw = '0x' + serializedTx.toString('hex')
 
   console.log("about to send transaction")
-  let txHash = await sendTransaction(raw)
-  console.log("err: " + txHash.err)
-  console.log("txHash: " + txHash.txHash)
+  let minedTransaction = await sendTransaction(raw)
+  console.log(minedTransaction)
+  console.log("txHash: " + minedTransaction.transactionHash)
 }
 
 const transfer = async() => {
-  await transferFunds(account1, account2, 0.05)
+  await transferFunds(account1, account2, "0.001")
 }
 
 transfer()
