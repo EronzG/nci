@@ -31,8 +31,13 @@ app.post('/transfer', async (req, res) => {
   res.send(await method.transferFunds(account_from, account_to, amount));
 })
 
-app.get('/balance?accountid', async (req, res) => {
-  res.send( await method.getBalanceOf())
+
+// this is an example of using paramaters in the URL to pass in data
+// example curl: 
+// curl -XGET http://localhost:8080/balance/0x9b14eee99808bab2a4c6492d37b4d771f75b7631
+app.get('/balance/:id', async (req, res) => {
+  var account = req.params.id
+  res.send( await method.getBalanceOf(account))
 })
 
 const port = 8080;
