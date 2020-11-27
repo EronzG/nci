@@ -6,22 +6,15 @@ const { METHODS } = require('http')
 const app = express()
 app.use(express.json())
 
-app.get('/', async (req,res) => {
+app.get('/totalsupply', async (req,res) => {
   res.send(await contract.totalSupply())
 })
 
-app.get('/supply', async (req,res) => {
-  res.send(await contract.totalSupply())
-})
+// POST - creates something (C)
+// GET - reads something (R)
+// PUT - updates something (U)
+// DELETE - removes something (D)
 
-
-
-// POST to the web server
-// execute the transfer function
-// pass in
-// - account 1
-// - account 2
-// - amount
 
 app.post('/transfer', async (req, res) => {
   var account_from = req.body.account_from;
@@ -45,7 +38,7 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 //curl -XPOST http://localhost:8080/transfer -H 'content-type: application/json' -d '{"account_from": "0x9b14eeE99808BaB2a4C6492D37B4D771F75b7631","account_to": "0xe8a43eFC2CE385AbA7465101262b03B0d2489c43","amount": "1000000000000"}'
 
-
+// curl -XGET http://localhost:8080/balance/0x9b14eeE99808BaB2a4C6492D37B4D771F75b7631
 //curl -XPOST http://localhost:8080/transfer -H 'content-type: application/json' -d '{"account_from": "0x9b14eeE99808BaB2a4C6492D37B4D771F75b7631","account_to": "0x9Ca57f358dC7871C471714Aaa828fFE38f60b194","amount": "1000000000000"}'
 
 //{account: [{account1, account2, account3, account4, account5}]}
