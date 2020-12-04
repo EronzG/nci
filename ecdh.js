@@ -29,10 +29,18 @@ var sodium = require('sodium-native')
 // Ed25519 algorithm (twisted Edwards curve)
 
 // alice makes a public/private key pair
-var aliceX25519PublicKey = sodium.sodium_malloc(sodium.crypto_box_PUBLICBYTES)
+var aliceX25519PublicKey = sodium.sodium_malloc(sodium.crypto_box_PUBLICKEYBYTES)
 var aliceX25519SecretKey = sodium.sodium_malloc(sodium.crypto_box_SECRETKEYBYTES)
+sodium.sodium_memzero(aliceX25519PublicKey)
+sodium.sodium_memzero(aliceX25519SecretKey)
 
-console.log(`alice's public key is ${sodium.crypto_box_PUBLICBYTES}-bytes long`)
+console.log(`alice's public key is ${sodium.crypto_box_PUBLICKEYBYTES}-bytes long`)
+console.log(`alice's secret key is ${sodium.crypto_box_SECRETKEYBYTES}-bytes long`)
+
+sodium.crypto_box_keypair(aliceX25519PublicKey, aliceX25519SecretKey)
+
+console.log(`Alice's public key is: ${aliceX25519PublicKey.toString('base64')}`)
+console.log(`Alice's private key is: ${aliceX25519SecretKey.toString('base64')}`)
 
 // bob makes a public/private key pair
 
