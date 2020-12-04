@@ -76,4 +76,28 @@ console.log(`Bob's shared secret is ${bobSharedSecret.toString('base64')}`)
 
 // Ideally, both Alice and Bob will have access to the same secret
 
+// elliptic curve public key 
+// [G * very_large_number (VLN)] 
+//(256-bit number)
+
+// elliptic curve private key
+// VLN
+
+// Alice Public Key: G*VLNAlice
+// Bob's Public Key: G*VLNBob
+
+// Alice's Private Key: VLNAlice
+// Bob's Private Key: VLNBob
+
+// Alice Shared Secret: (G * VLNBob) * VLNAlice = ss
+// Bob Shared Secret: (G * VLNAlice) * VLNBob = ss
+
+// AlicePubKey: 3 * 54 (162)
+// AlicePrivKey: 54
+
+// BobPubKey: 3 * 17 (51)
+// BobPrivKey: 17
+
+// BobSharedSecret: (17 * 3) * 54 = 2754
+// AliceSharedSecret: 54 * (3 * 17) = 2754
 
