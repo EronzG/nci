@@ -57,11 +57,15 @@ console.log(`Bob's public key is: ${bobX25519PublicKey.toString('base64')}`)
 console.log(`Bob's private key is: ${bobX25519SecretKey.toString('base64')}`)
 
 // assume that Alice can access Bob's public key and vice versa
-
 // Alice runs an ECDH using her private key, and Bob's public key
 
 // Bob runs an ECDH using his private key, and Alice's public key
+var aliceSharedSecret = sodium.sodium_malloc(sodium.crypto_scalarmult_BYTES)
+sodium.sodium_memzero(aliceSharedSecret)
 
+sodium.crypto_scalarmult(aliceSharedSecret, aliceX25519SecretKey, bobX25519PublicKey)
+
+console.log(`Alice's shared secret is ${aliceSharedSecret.toString('base64')}`)
 // Ideally, both Alice and Bob will have access to the same secret
 
 
