@@ -16,3 +16,13 @@ sodium.crypto_sign_keypair(alicePublicSigningKey, alicePrivateSigningKey)
 console.log(`alice public key is: ${alicePublicSigningKey.toString('base64')}`)
 console.log(`alice private key is: ${alicePrivateSigningKey.toString('base64')}`)
 
+// hash a message (using lib sodium) in order to sign it
+var message = "Alice is not Satoshi Nakamoto"
+
+var messageHash = sodium.sodium_malloc(sodium.crypto_hash_sha256_BYTES)
+sodium.sodium_memzero(messageHash)
+
+sodium.crypto_hash_sha256(messageHash, Buffer.from(message))
+
+console.log(`message hash is: ${messageHash.toString('base64')}`)
+
