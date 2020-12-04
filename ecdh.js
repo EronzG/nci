@@ -43,6 +43,18 @@ console.log(`Alice's public key is: ${aliceX25519PublicKey.toString('base64')}`)
 console.log(`Alice's private key is: ${aliceX25519SecretKey.toString('base64')}`)
 
 // bob makes a public/private key pair
+var bobX25519PublicKey = sodium.sodium_malloc(sodium.crypto_box_PUBLICKEYBYTES)
+var bobX25519SecretKey = sodium.sodium_malloc(sodium.crypto_box_SECRETKEYBYTES)
+sodium.sodium_memzero(bobX25519PublicKey)
+sodium.sodium_memzero(bobX25519SecretKey)
+
+console.log(`bob's public key is ${sodium.crypto_box_PUBLICKEYBYTES}-bytes long`)
+console.log(`bob's secret key is ${sodium.crypto_box_SECRETKEYBYTES}-bytes long`)
+
+sodium.crypto_box_keypair(bobX25519PublicKey, bobX25519SecretKey)
+
+console.log(`Bob's public key is: ${bobX25519PublicKey.toString('base64')}`)
+console.log(`Bob's private key is: ${bobX25519SecretKey.toString('base64')}`)
 
 // assume that Alice can access Bob's public key and vice versa
 
