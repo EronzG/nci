@@ -76,6 +76,68 @@ console.log(`Bob's shared secret is ${bobSharedSecret.toString('base64')}`)
 
 // Ideally, both Alice and Bob will have access to the same secret
 
+
+
+
+//*************************************************** */
+// ENCRYPTING AND DECRYPTING USING THAT SHARED SECRET 
+// to encrypt something with chachapoly 1305 or AES
+// you need a secret
+// and a nonce
+// **if the nonce is repeated, the encrypted text is crackable**
+// https://security.stackexchange.com/questions/136739/aes-use-same-nonce-security-risk
+
+
+// we're going to encrypt a message from Alice to Bob
+let textToEncrypt = "hello bob, how are you"
+// encryption key = aliceSharedSecret
+// nonce = 1  -- it's the first message that Alice is sending Bob
+
+
+// Alice will have to keep track of the nonces of her messages 
+// so as never to repeat them
+// we could also use a random nonce, as the nonce is included in the
+// encrypted text, but as only 12 bytes are available, there is a chance of a 
+// nonce collision if a lot of messages are sent, which would be a catastrophic 
+// failure in this encryption mechanism
+
+// let's set up the encrypted message
+// the encrypted message will be the same length as the cleartext message
+// although as the encrypted message also includes the nonce, 
+// we can expect it to be 12 bytes longer in total
+var aliceEncryptedMessage = sodium.sodium_malloc(textToEncrypt.length)
+
+// let's set up the nonce (we'll zero the memory location as well)
+var aliceEncryptedMessageNonce = sodium.sodium_malloc(sodium.crypto_stream_chacha20_NONCEBYTES)
+sodium.sodium_memzero(aliceEncryptedMessageNonce)
+
+//we'll incremement the nonce from 0 to 1
+sodium.sodium_increment(aliceEncryptedMessageNonce)
+
+// now we'll encrypt the message
+sodium.crypto_stream_chacha20_xor(aliceEncryptedMessage, Buffer.from(textToEncrypt), aliceEncryptedMessageNonce, aliceSharedSecret)
+
+
+// and now we'll simulate bob decrypting the secret
+// he'll use his shared secret, not Alice's!
+// but for convenience, we'll use the same nonce 
+// (to save writing the same code again)
+
+// allocate the memory for the decrypted message content
+// it will be the same length as the encrypted message
+var bobDecryptedMessage = sodium.sodium_malloc(aliceEncryptedMessage.length)
+
+// the decryption is the same process as the encryption (like doing it twice)
+sodium.crypto_stream_chacha20_xor(bobDecryptedMessage, aliceEncryptedMessage, aliceEncryptedMessageNonce, bobSharedSecret)
+
+// and now let's make sure bob reads the original message!
+console.log("bob decrypted the message to be: " + bobDecryptedMessage)
+
+
+
+
+
+
 // elliptic curve public key 
 // [G * very_large_number (VLN)] 
 //(256-bit number)
