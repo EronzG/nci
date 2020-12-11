@@ -23,6 +23,7 @@
 // Signal Protocol - every communication uses a different encryption key, 
 // that cannot be derived from the previous encryption key
 
+const { text } = require('body-parser')
 var sodium = require('sodium-native')
 
 // X25519 crypto algorithm for public/private key pairs
@@ -90,6 +91,8 @@ console.log(`Bob's shared secret is ${bobSharedSecret.toString('base64')}`)
 
 // we're going to encrypt a message from Alice to Bob
 let textToEncrypt = "hello bob, how are you"
+console.log("alice is encrypting: " + textToEncrypt)
+
 // encryption key = aliceSharedSecret
 // nonce = 1  -- it's the first message that Alice is sending Bob
 
@@ -103,8 +106,8 @@ let textToEncrypt = "hello bob, how are you"
 
 // let's set up the encrypted message
 // the encrypted message will be the same length as the cleartext message
-// although as the encrypted message also includes the nonce, 
-// we can expect it to be 12 bytes longer in total
+// although as the encrypted message can also include the nonce, 
+// so it would be 12 bytes longer in total
 var aliceEncryptedMessage = sodium.sodium_malloc(textToEncrypt.length)
 
 // let's set up the nonce (we'll zero the memory location as well)
@@ -120,15 +123,21 @@ sodium.crypto_stream_chacha20_xor(aliceEncryptedMessage, Buffer.from(textToEncry
 
 // and now we'll simulate bob decrypting the secret
 // he'll use his shared secret, not Alice's!
-// but for convenience, we'll use the same nonce 
-// (to save writing the same code again)
+
+// okay, let's have bob generate the nonce. he's expecting message 1 from alice
+var bobEncryptedMessageNonce = sodium.sodium_malloc(sodium.crypto_stream_chacha20_NONCEBYTES)
+sodium.sodium_memzero(bobEncryptedMessageNonce)
+sodium.sodium_increment(bobEncryptedMessageNonce)
 
 // allocate the memory for the decrypted message content
 // it will be the same length as the encrypted message
 var bobDecryptedMessage = sodium.sodium_malloc(aliceEncryptedMessage.length)
 
+
 // the decryption is the same process as the encryption (like doing it twice)
-sodium.crypto_stream_chacha20_xor(bobDecryptedMessage, aliceEncryptedMessage, aliceEncryptedMessageNonce, bobSharedSecret)
+// using the same key and nonce will encrypt cleartext or decrypt ciphertext
+// bob's decryption key = bobSharedSecret
+sodium.crypto_stream_chacha20_xor(bobDecryptedMessage, aliceEncryptedMessage, bobEncryptedMessageNonce, bobSharedSecret)
 
 // and now let's make sure bob reads the original message!
 console.log("bob decrypted the message to be: " + bobDecryptedMessage)
